@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Fitness Tracker</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Reset and base */
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+            color: #222;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            text-align: center;
+            padding: 3rem 1rem 2rem;
+        }
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            color: #0d47a1;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.14);
+        }
+        header p {
+            font-size: 1.2rem;
+            max-width: 560px;
+            margin: 0 auto;
+            color: #333;
+        }
+
+        main {
+            flex-grow: 1;
+            max-width: 1100px;
+            margin: 1rem auto 2rem;
+            padding: 0 1.25rem;
+            width: 100%;
+        }
+
+        /* Exercise Card Grid */
+        .exercise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+            gap: 1.5rem;
+        }
+
+        /* Card styling */
+        .exercise-card {
+            background: linear-gradient(145deg, #ffffff, #e6f0ff);
+            border-radius: 16px;
+            box-shadow: 5px 8px 20px rgba(22,54,145,0.1);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            aspect-ratio: 1 / 1; /* Square shape */
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #0d47a1;
+            font-weight: 600;
+            font-size: 1.25rem;
+            user-select: none;
+            text-align: center;
+        }
+        .exercise-card:hover {
+            box-shadow: 0 10px 30px rgba(22,54,145,0.3);
+            transform: translateY(-8px);
+            background: linear-gradient(145deg, #dbe7ff, #a8c1ff);
+        }
+
+        /* Icon styling */
+        .exercise-card i {
+            font-size: 4.5rem;
+            margin-bottom: 1.2rem;
+            color: #1976d2;
+        }
+
+        /* Footer location section */
+        footer {
+            background: #0d47a1;
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            font-size: 1.1rem;
+            box-shadow: inset 0 10px 20px -10px rgba(0,0,0,0.5);
+        }
+        footer h3 {
+            margin: 0 0 0.75rem;
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+        footer p {
+            margin: 0;
+            max-width: 380px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Welcome to Fitness Tracker</h1>
+    <p>Your smart companion to track and improve your exercises using AI-powered tracking and personalized feedback.</p>
+</header>
+
+<main>
+    <div class="exercise-grid" aria-label="Select Exercise">
+        <div class="exercise-card" tabindex="0" role="button" aria-pressed="false" onclick="startExercise('Curl Counter')" onkeydown="if(event.key==='Enter'||event.key===' ') startExercise('Curl Counter')">
+            <i class="fas fa-dumbbell" aria-hidden="true"></i>
+            Curl Counter
+        </div>
+        <div class="exercise-card" tabindex="0" role="button" aria-pressed="false" onclick="startExercise('Squat Counter')" onkeydown="if(event.key==='Enter'||event.key===' ') startExercise('Squat Counter')">
+            <i class="fas fa-people-arrows" aria-hidden="true"></i>
+            Squat Counter
+        </div>
+        <div class="exercise-card" tabindex="0" role="button" aria-pressed="false" onclick="startExercise('Push-up Counter')" onkeydown="if(event.key==='Enter'||event.key===' ') startExercise('Push-up Counter')">
+            <i class="fas fa-fist-raised" aria-hidden="true"></i>
+            Push-up Counter
+        </div>
+        <div class="exercise-card" tabindex="0" role="button" aria-pressed="false" onclick="startExercise('Jumping Jack Counter')" onkeydown="if(event.key==='Enter'||event.key===' ') startExercise('Jumping Jack Counter')">
+            <i class="fas fa-running" aria-hidden="true"></i>
+            Jumping Jack Counter
+        </div>
+        <div class="exercise-card" tabindex="0" role="button" aria-pressed="false" onclick="startExercise('Lunge Counter')" onkeydown="if(event.key==='Enter'||event.key===' ') startExercise('Lunge Counter')">
+            <i class="fas fa-walking" aria-hidden="true"></i>
+            Lunge Counter
+        </div>
+        <div class="exercise-card" tabindex="0" role="button" aria-pressed="false" onclick="startExercise('Plank Tracker')" onkeydown="if(event.key==='Enter'||event.key===' ') startExercise('Plank Tracker')">
+            <i class="fas fa-user-secret" aria-hidden="true"></i>
+            Plank Tracker
+        </div>
+    </div>
+</main>
+
+<footer>
+    <h3>Our Location</h3>
+    <p>133(1) Fitness Ave, Health City, Wellness State, 636306</p>
+</footer>
+
+<script>
+    function startExercise(exercise) {
+        fetch('/start_exercise', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ exercise: exercise })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+            } else {
+                alert(data.message);
+                // Optionally, redirect to a new page or update the UI
+                // window.location.href = '/exercise'; // Uncomment this line when you have the exercise page
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+</script>
+
+</body>
+</html>
